@@ -80,7 +80,11 @@ df %>% dplyr::select(all_of(c(mt,cnt, fws, sws))) %>%
                cols = -c("WB_Name","WB_Type","RBD"),
                names_to = "variable",
                values_to = "value"
-               ) -> df_trim_l
+               ) %>% 
+  mutate(., variable = paste0(tolower(substr(variable, 1, 1)),
+                               substr(variable,
+                                      2,
+                                      nchar(variable)))) -> df_trim_l
 toc(log = TRUE)
 
 tic("generate plots")
