@@ -48,7 +48,7 @@ sws <- c("SUM_Total_SWS_HS_pml_picoRed","SUM_Total_SWS_HS_pml_nanoCrypto1",
         "SUM_Total_SWS_HS_pml_microRed_HS","SUM_Total_SWS_HS_pml_NanoRed_HS_nw",
         "SUM_Total_SWS_HS_pml_NanoRed_nw","SUM_Total_SWS_HS_pml_WrSi")
 
-mt <- c("WB_Name","WB_Type","RBD") ##row info columns
+mt <- c("Date","WB_Name","WB_Type","RBD") ##row info columns
 
 df %>% dplyr::select(all_of(c(mt,cnt, fws, sws))) %>% 
   st_drop_geometry() %>% ## remove geometry column
@@ -56,28 +56,28 @@ df %>% dplyr::select(all_of(c(mt,cnt, fws, sws))) %>%
   ### tidy column names
   #modify count names
   rename_with(
-    .cols = 4:17,
+    .cols = 5:18,
     #.fn = ~str_c(str_sub(.,12),"_ml")) %>% names()
     .fn = ~ str_c(
       str_remove_all(str_sub(., 12), "_"),
       "_ml")) %>% #names()
   #modify FWS names
   rename_with(
-    .cols = 18:31, 
+    .cols = 19:32, 
     # .fn = ~str_c(str_sub(.,19),"_FWS")) %>% #names()
     .fn = ~ str_c(
       str_remove_all(str_sub(., 19), "_"),
       "_FWS")) %>% #names()
   #modify SWS names
   rename_with(
-    .cols = 32:45, 
+    .cols = 33:46, 
     # .fn = ~str_c(str_sub(.,22),"_SWS")) %>% #names()
     .fn = ~ str_c(
       str_remove_all(str_sub(., 22), "_"),
       "_SWS")) %>% #names()
   ### lengthen data
   pivot_longer(.,
-               cols = -c("WB_Name","WB_Type","RBD"),
+               cols = -c("Date","WB_Name","WB_Type","RBD"),
                names_to = "variable",
                values_to = "value"
                ) %>% 
@@ -92,6 +92,7 @@ tic("generate plots")
 # count data ####
 df_trim_l %>% 
   filter(.,str_ends(variable, "_ml")) %>% 
+  filter(., variable != "wrSi_ml") %>% 
   ggplot(., aes(x= variable,
                 #col=WB_Name,
                 y= log(value+1)
@@ -114,6 +115,7 @@ rm(pl)
 #FWS data ####
 df_trim_l %>% 
   filter(.,str_ends(variable, "_FWS")) %>% 
+  filter(., variable != "wrSi_FWS") %>% 
   ggplot(., aes(x= variable,
                 #col=WB_Name,
                 y= log(value+1)
@@ -136,6 +138,7 @@ rm(pl)
 #SWS data ####
 df_trim_l %>% 
   filter(.,str_ends(variable, "_SWS")) %>% 
+  filter(., variable != "wrSi_SWS") %>% 
   ggplot(., aes(x= variable,
                 #col=WB_Name,
                 y= log(value+1)
@@ -155,6 +158,305 @@ df_trim_l %>%
 ggsave(plot=pl, file="figs/initPlot_box_SWS.pdf",width = 14, height = 8)
 rm(pl)
 
+toc(log=TRUE)
+
+# Time series ####
+## counts ####
+tic("Plot time series for counts")
+### Anglian ####
+df_trim_l %>% 
+  filter(.,str_ends(variable, "_ml")) %>% 
+  filter(.,variable != "wrSi_ml") %>% 
+  filter(., RBD == "Anglian") %>% 
+  ggplot(., aes(x= Date,
+                #col=WB_Name,
+                y= log(value+1)
+  ))+
+  geom_point()+
+  geom_smooth(method = "loess") + 
+  facet_wrap(.~variable)+
+  labs(
+    title = "Anglian RBD",
+    subtitle = "Log (n+1) counts per ml"
+  ) +
+  theme(
+    axis.text.x = element_text(angle=90*3, hjust = 0, vjust=0),
+    axis.title = element_blank(),
+    strip.text = element_text(face=2)
+  ) -> pl
+ggsave(plot=pl, file="figs/initPlot_ts_counts_ang.pdf",width = 14, height = 8)
+rm(pl)
+
+### Humber ####
+df_trim_l %>% 
+  filter(.,str_ends(variable, "_ml")) %>% 
+  filter(.,variable != "wrSi_ml") %>% 
+  filter(., RBD == "Humber") %>% 
+  ggplot(., aes(x= Date,
+                #col=WB_Name,
+                y= log(value+1)
+  ))+
+  geom_point()+
+  geom_smooth(method = "loess") + 
+  facet_wrap(.~variable)+
+  labs(
+    title = "Humber RBD",
+    subtitle = "Log (n+1) counts per ml"
+  ) +
+  theme(
+    axis.text.x = element_text(angle=90*3, hjust = 0, vjust=0),
+    axis.title = element_blank(),
+    strip.text = element_text(face=2)
+  ) -> pl
+ggsave(plot=pl, file="figs/initPlot_ts_counts_hum.pdf",width = 14, height = 8)
+rm(pl)
+
+### Northumbria ####
+df_trim_l %>% 
+  filter(.,str_ends(variable, "_ml")) %>% 
+  filter(.,variable != "wrSi_ml") %>% 
+  filter(., RBD == "Northumbria") %>% 
+  ggplot(., aes(x= Date,
+                #col=WB_Name,
+                y= log(value+1)
+  ))+
+  geom_point()+
+  geom_smooth(method = "loess") + 
+  facet_wrap(.~variable)+
+  labs(
+    title = "Northumbria RBD",
+    subtitle = "Log (n+1) counts per ml"
+  ) +
+  theme(
+    axis.text.x = element_text(angle=90*3, hjust = 0, vjust=0),
+    axis.title = element_blank(),
+    strip.text = element_text(face=2)
+  ) -> pl
+ggsave(plot=pl, file="figs/initPlot_ts_counts_nmb.pdf",width = 14, height = 8)
+rm(pl)
+
+### Solway Tweed ####
+df_trim_l %>% 
+  filter(.,str_ends(variable, "_ml")) %>% 
+  filter(.,variable != "wrSi_ml") %>% 
+  filter(., RBD == "Solway Tweed") %>% 
+  ggplot(., aes(x= Date,
+                #col=WB_Name,
+                y= log(value+1)
+  ))+
+  geom_point()+
+  geom_smooth(method = "loess") + 
+  facet_wrap(.~variable)+
+  labs(
+    title = "Solway Tweed RBD",
+    subtitle = "Log (n+1) counts per ml"
+  ) +
+  theme(
+    axis.text.x = element_text(angle=90*3, hjust = 0, vjust=0),
+    axis.title = element_blank(),
+    strip.text = element_text(face=2)
+  ) -> pl
+ggsave(plot=pl, file="figs/initPlot_ts_counts_stw.pdf",width = 14, height = 8)
+rm(pl)
+toc(log=TRUE)
+
+##FWS data ####
+tic("Plot time series for FWS")
+### Anglian ####
+df_trim_l %>% 
+  filter(.,str_ends(variable, "_FWS")) %>% 
+  filter(., variable != "wrSi_FWS") %>% 
+  filter(., RBD == "Anglian") %>% 
+  ggplot(., aes(x= Date,
+                #col=WB_Name,
+                y= log(value+1)
+  ))+
+  geom_point()+
+  geom_smooth(method = "loess") + 
+  facet_wrap(.~variable)+
+  labs(
+    title="Anglian",
+    subtitle = "Log (n+1) total FWS values per ml"
+  ) +
+  theme(
+    axis.text.x = element_text(angle=90*3, hjust = 0, vjust=0),
+    axis.title = element_blank(),
+    strip.text = element_text(face=2)
+  ) -> pl
+
+ggsave(plot=pl, file="figs/initPlot_ts_FWS_ang.pdf",width = 14, height = 8)
+rm(pl)
+
+### Humber ####
+df_trim_l %>% 
+  filter(.,str_ends(variable, "_FWS")) %>% 
+  filter(., variable != "wrSi_FWS") %>% 
+  filter(., RBD == "Humber") %>% 
+  ggplot(., aes(x= Date,
+                #col=WB_Name,
+                y= log(value+1)
+  ))+
+  geom_point()+
+  geom_smooth(method = "loess") + 
+  facet_wrap(.~variable)+
+  labs(
+    title="Humber",
+    subtitle = "Log (n+1) total FWS values per ml"
+  ) +
+  theme(
+    axis.text.x = element_text(angle=90*3, hjust = 0, vjust=0),
+    axis.title = element_blank(),
+    strip.text = element_text(face=2)
+  ) -> pl
+
+ggsave(plot=pl, file="figs/initPlot_ts_FWS_hum.pdf",width = 14, height = 8)
+rm(pl)
+
+### Northumbria ####
+df_trim_l %>% 
+  filter(.,str_ends(variable, "_FWS")) %>% 
+  filter(., variable != "wrSi_FWS") %>% 
+  filter(., RBD == "Northumbria") %>% 
+  ggplot(., aes(x= Date,
+                #col=WB_Name,
+                y= log(value+1)
+  ))+
+  geom_point()+
+  geom_smooth(method = "loess") + 
+  facet_wrap(.~variable)+
+  labs(
+    title="Northumbria",
+    subtitle = "Log (n+1) total FWS values per ml"
+  ) +
+  theme(
+    axis.text.x = element_text(angle=90*3, hjust = 0, vjust=0),
+    axis.title = element_blank(),
+    strip.text = element_text(face=2)
+  ) -> pl
+
+ggsave(plot=pl, file="figs/initPlot_ts_FWS_nmb.pdf",width = 14, height = 8)
+rm(pl)
+
+### Solway Tweed ####
+df_trim_l %>% 
+  filter(.,str_ends(variable, "_FWS")) %>% 
+  filter(., variable != "wrSi_FWS") %>% 
+  filter(., RBD == "Solway Tweed") %>% 
+  ggplot(., aes(x= Date,
+                #col=WB_Name,
+                y= log(value+1)
+  ))+
+  geom_point()+
+  geom_smooth(method = "loess") + 
+  facet_wrap(.~variable)+
+  labs(
+    title="Solway Tweed",
+    subtitle = "Log (n+1) total FWS values per ml"
+  ) +
+  theme(
+    axis.text.x = element_text(angle=90*3, hjust = 0, vjust=0),
+    axis.title = element_blank(),
+    strip.text = element_text(face=2)
+  ) -> pl
+
+ggsave(plot=pl, file="figs/initPlot_ts_FWS_stw.pdf",width = 14, height = 8)
+rm(pl)
+
+## SWS data ####
+tic("Plot time series for SWS")
+### Anglian ####
+df_trim_l %>% 
+  filter(.,str_ends(variable, "_SWS")) %>% 
+  filter(., variable != "wrSi_SWS") %>% 
+  filter(., RBD == "Anglian") %>% 
+  ggplot(., aes(x= Date,
+                y= log(value+1)
+  ))+
+  geom_point()+
+  geom_smooth(method="loess")+
+  facet_wrap(.~variable)+
+  labs(
+    title = "Anglian",
+    subtitle = "Log (n+1) total SWS values per ml"
+  ) +
+  theme(
+    axis.text.x = element_text(angle=90*3, hjust = 0, vjust=0),
+    axis.title = element_blank(),
+    strip.text = element_text(face=2)
+  ) -> pl
+
+ggsave(plot=pl, file="figs/initPlot_ts_SWS_ang.pdf",width = 14, height = 8)
+rm(pl)
+
+### Humber ####
+df_trim_l %>% 
+  filter(.,str_ends(variable, "_SWS")) %>% 
+  filter(., variable != "wrSi_SWS") %>% 
+  filter(., RBD == "Humber") %>% 
+  ggplot(., aes(x= Date,
+                y= log(value+1)
+  ))+
+  geom_point()+
+  geom_smooth(method="loess")+
+  facet_wrap(.~variable)+
+  labs(
+    title = "Humber",
+    subtitle = "Log (n+1) total SWS values per ml"
+  ) +
+  theme(
+    axis.text.x = element_text(angle=90*3, hjust = 0, vjust=0),
+    axis.title = element_blank(),
+    strip.text = element_text(face=2)
+  ) -> pl
+
+ggsave(plot=pl, file="figs/initPlot_ts_SWS_hum.pdf",width = 14, height = 8)
+rm(pl)
+
+### Northumbria ####
+df_trim_l %>% 
+  filter(.,str_ends(variable, "_SWS")) %>% 
+  filter(., variable != "wrSi_SWS") %>% 
+  filter(., RBD == "Northumbria") %>% 
+  ggplot(., aes(x= Date,
+                y= log(value+1)
+  ))+
+  geom_point()+
+  geom_smooth(method="loess")+
+  facet_wrap(.~variable)+
+  labs(
+    title = "Northumbria",
+    subtitle = "Log (n+1) total SWS values per ml"
+  ) +
+  theme(
+    axis.text.x = element_text(angle=90*3, hjust = 0, vjust=0),
+    axis.title = element_blank(),
+    strip.text = element_text(face=2)
+  ) -> pl
+ggsave(plot=pl, file="figs/initPlot_ts_SWS_nmb.pdf",width = 14, height = 8)
+rm(pl)
+
+### Solway Tweed ####
+df_trim_l %>% 
+  filter(.,str_ends(variable, "_SWS")) %>% 
+  filter(., variable != "wrSi_SWS") %>% 
+  filter(., RBD == "Solway Tweed") %>% 
+  ggplot(., aes(x= Date,
+                y= log(value+1)
+  ))+
+  geom_point()+
+  geom_smooth(method="loess")+
+  facet_wrap(.~variable)+
+  labs(
+    title = "Solway Tweed",
+    subtitle = "Log (n+1) total SWS values per ml"
+  ) +
+  theme(
+    axis.text.x = element_text(angle=90*3, hjust = 0, vjust=0),
+    axis.title = element_blank(),
+    strip.text = element_text(face=2)
+  ) -> pl
+ggsave(plot=pl, file="figs/initPlot_ts_SWS_stw.pdf",width = 14, height = 8)
+rm(pl)
 toc(log=TRUE)
 
 unlist(tictoc::tic.log())
