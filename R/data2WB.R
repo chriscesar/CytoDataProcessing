@@ -59,10 +59,10 @@ toc(log=TRUE)
 
 # Write data ####
 tic("Write data")
-write.csv(
-  df0_trim_with_nearest,
-  file = "data_out/joined_data.csv",
-  row.names = FALSE)
+# write.csv(
+#   df0_trim_with_nearest,
+#   file = "data_out/joined_data.csv",
+#   row.names = FALSE)
 df <- df0_trim_with_nearest
 
 toc(log = TRUE)
