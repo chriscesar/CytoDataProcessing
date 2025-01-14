@@ -2,7 +2,7 @@
 # produce some initial figs by WB of selected cyto data parameters
 
 ## load packages ####
-ld_pkgs <- c("tidyverse", "tictoc","sf","maps","nngeo", "stringr")
+ld_pkgs <- c("tidyverse", "tictoc","sf","maps","nngeo", "stringr","ggforce")
 vapply(ld_pkgs, library, logical(1L),
        character.only = TRUE, logical.return = TRUE);rm(ld_pkgs)
 
@@ -458,5 +458,538 @@ df_trim_l %>%
 ggsave(plot=pl, file="figs/initPlot_ts_SWS_stw.pdf",width = 14, height = 8)
 rm(pl)
 toc(log=TRUE)
+
+unlist(tictoc::tic.log())
+
+######
+# Time series - paginated ####
+# ## counts ####
+# tic("Plot time series for counts")
+# ### Anglian ####
+# df_trim_l %>% 
+#   filter(.,str_ends(variable, "_ml")) %>% 
+#   filter(.,variable != "wrSi_ml") %>% 
+#   filter(., RBD == "Anglian") -> df_tmp
+# # n_pages <- ceiling(length(unique(df_tmp$variable)))
+# variables <- unique(df_tmp$variable)
+# 
+# # Loop through each variable and create a plot
+# for (var in variables) {
+#   # Filter data for the current variable
+#   df_var <- df_tmp %>% filter(variable == var)
+#   
+#   # Generate the plot
+#   pl <- df_var %>% 
+#     ggplot(aes(
+#       x = Date,
+#       y = log(value + 1)
+#     )) +
+#     geom_point() +
+#     geom_smooth(method = "loess") + 
+#     labs(
+#       title = paste("Anglian RBD:", var),
+#       subtitle = "Log (n+1) counts per ml"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0),
+#       axis.title = element_blank(),
+#       strip.text = element_text(face = 2)
+#     )
+#   
+#   # Save the plot with the variable name in the filename
+#   ggsave(
+#     plot = pl, 
+#     file = paste0("figs/initPlot_ts_counts_", var, "_ang.pdf"),
+#     width = 14, 
+#     height = 8
+#   )
+# }
+# rm(pl,variables,df_tmp,df_var)
+# 
+# ### Humber ####
+# df_trim_l %>% 
+#   filter(.,str_ends(variable, "_ml")) %>% 
+#   filter(.,variable != "wrSi_ml") %>% 
+#   filter(., RBD == "Humber") -> df_tmp
+# variables <- unique(df_tmp$variable)
+# 
+# # Loop through each variable and create a plot
+# for (var in variables) {
+#   # Filter data for the current variable
+#   df_var <- df_tmp %>% filter(variable == var)
+#   
+#   # Generate the plot
+#   pl <- df_var %>% 
+#     ggplot(aes(
+#       x = Date,
+#       y = log(value + 1)
+#     )) +
+#     geom_point() +
+#     geom_smooth(method = "loess") + 
+#     labs(
+#       title = paste("Humber RBD:", var),
+#       subtitle = "Log (n+1) counts per ml"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0),
+#       axis.title = element_blank(),
+#       strip.text = element_text(face = 2)
+#     )
+#   
+#   # Save the plot with the variable name in the filename
+#   ggsave(
+#     plot = pl, 
+#     file = paste0("figs/initPlot_ts_counts_", var, "_hum.pdf"),
+#     width = 14, 
+#     height = 8
+#   )
+# }
+# rm(pl,variables,df_tmp,df_var)
+# 
+# ### Northumbria ####
+# df_trim_l %>% 
+#   filter(.,str_ends(variable, "_ml")) %>% 
+#   filter(.,variable != "wrSi_ml") %>% 
+#   filter(., RBD == "Northumbria") -> df_tmp
+# variables <- unique(df_tmp$variable)
+# 
+# # Loop through each variable and create a plot
+# for (var in variables) {
+#   # Filter data for the current variable
+#   df_var <- df_tmp %>% filter(variable == var)
+#   
+#   # Generate the plot
+#   pl <- df_var %>% 
+#     ggplot(aes(
+#       x = Date,
+#       y = log(value + 1)
+#     )) +
+#     geom_point() +
+#     geom_smooth(method = "loess") + 
+#     labs(
+#       title = paste("Northumbria RBD:", var),
+#       subtitle = "Log (n+1) counts per ml"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0),
+#       axis.title = element_blank(),
+#       strip.text = element_text(face = 2)
+#     )
+#   
+#   # Save the plot with the variable name in the filename
+#   ggsave(
+#     plot = pl, 
+#     file = paste0("figs/initPlot_ts_counts_", var, "_nthm.pdf"),
+#     width = 14, 
+#     height = 8
+#   )
+# }
+# rm(pl,variables,df_tmp,df_var)
+# 
+# ### Solway Tweed ####
+# df_trim_l %>% 
+#   filter(.,str_ends(variable, "_ml")) %>% 
+#   filter(.,variable != "wrSi_ml") %>% 
+#   filter(., RBD == "Solway Tweed") -> df_tmp
+# variables <- unique(df_tmp$variable)
+# 
+# # Loop through each variable and create a plot
+# for (var in variables) {
+#   # Filter data for the current variable
+#   df_var <- df_tmp %>% filter(variable == var)
+#   
+#   # Generate the plot
+#   pl <- df_var %>% 
+#     ggplot(aes(
+#       x = Date,
+#       y = log(value + 1)
+#     )) +
+#     geom_point() +
+#     geom_smooth(method = "loess") + 
+#     labs(
+#       title = paste("Solway Tweed RBD:", var),
+#       subtitle = "Log (n+1) counts per ml"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0),
+#       axis.title = element_blank(),
+#       strip.text = element_text(face = 2)
+#     )
+#   
+#   # Save the plot with the variable name in the filename
+#   ggsave(
+#     plot = pl, 
+#     file = paste0("figs/initPlot_ts_counts_", var, "_slwy.pdf"),
+#     width = 14, 
+#     height = 8
+#   )
+# }
+# rm(pl,variables,df_tmp,df_var)
+# toc(log=TRUE)
+# 
+# ##FWS data ####
+# tic("Plot time series for FWS")
+# ### Anglian ####
+# df_trim_l %>% 
+#   filter(.,str_ends(variable, "_FWS")) %>% 
+#   filter(., variable != "wrSi_FWS") %>% 
+#   filter(., RBD == "Anglian") -> df_tmp
+# variables <- unique(df_tmp$variable)
+# 
+# # Loop through each variable and create a plot
+# for (var in variables) {
+#   # Filter data for the current variable
+#   df_var <- df_tmp %>% filter(variable == var)
+#   
+#   # Generate the plot
+#   pl <- df_var %>% 
+#     ggplot(aes(
+#       x = Date,
+#       y = log(value + 1)
+#     )) +
+#     geom_point() +
+#     geom_smooth(method = "loess") + 
+#     labs(
+#       title = paste("Anglian RBD:", var),
+#       subtitle = "Log (n+1) total FWS values per ml"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0),
+#       axis.title = element_blank(),
+#       strip.text = element_text(face = 2)
+#     )
+#   
+#   # Save the plot with the variable name in the filename
+#   ggsave(
+#     plot = pl, 
+#     file = paste0("figs/initPlot_ts_counts_", var, "_ang.pdf"),
+#     width = 14, 
+#     height = 8
+#   )
+# }
+# rm(pl,variables,df_tmp,df_var)
+# 
+# ### Humber ####
+# df_trim_l %>% 
+#   filter(.,str_ends(variable, "_FWS")) %>% 
+#   filter(., variable != "wrSi_FWS") %>% 
+#   filter(., RBD == "Humber") -> df_tmp
+# variables <- unique(df_tmp$variable)
+# 
+# # Loop through each variable and create a plot
+# for (var in variables) {
+#   # Filter data for the current variable
+#   df_var <- df_tmp %>% filter(variable == var)
+#   
+#   # Generate the plot
+#   pl <- df_var %>% 
+#     ggplot(aes(
+#       x = Date,
+#       y = log(value + 1)
+#     )) +
+#     geom_point() +
+#     geom_smooth(method = "loess") + 
+#     labs(
+#       title = paste("Humber RBD:", var),
+#       subtitle = "Log (n+1) total FWS values per ml"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0),
+#       axis.title = element_blank(),
+#       strip.text = element_text(face = 2)
+#     )
+#   
+#   # Save the plot with the variable name in the filename
+#   ggsave(
+#     plot = pl, 
+#     file = paste0("figs/initPlot_ts_counts_", var, "_hum.pdf"),
+#     width = 14, 
+#     height = 8
+#   )
+# }
+# rm(pl,variables,df_tmp,df_var)
+# 
+# ### Northumbria ####
+# df_trim_l %>% 
+#   filter(.,str_ends(variable, "_FWS")) %>% 
+#   filter(., variable != "wrSi_FWS") %>% 
+#   filter(., RBD == "Northumbria") -> df_tmp
+# variables <- unique(df_tmp$variable)
+# 
+# # Loop through each variable and create a plot
+# for (var in variables) {
+#   # Filter data for the current variable
+#   df_var <- df_tmp %>% filter(variable == var)
+#   
+#   # Generate the plot
+#   pl <- df_var %>% 
+#     ggplot(aes(
+#       x = Date,
+#       y = log(value + 1)
+#     )) +
+#     geom_point() +
+#     geom_smooth(method = "loess") + 
+#     labs(
+#       title = paste("Northumbria RBD:", var),
+#       subtitle = "Log (n+1) total FWS values per ml"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0),
+#       axis.title = element_blank(),
+#       strip.text = element_text(face = 2)
+#     )
+#   
+#   # Save the plot with the variable name in the filename
+#   ggsave(
+#     plot = pl, 
+#     file = paste0("figs/initPlot_ts_counts_", var, "_nthm.pdf"),
+#     width = 14, 
+#     height = 8
+#   )
+# }
+# rm(pl,variables,df_tmp,df_var)
+# 
+# ### Solway Tweed ####
+# df_trim_l %>% 
+#   filter(.,str_ends(variable, "_FWS")) %>% 
+#   filter(., variable != "wrSi_FWS") %>% 
+#   filter(., RBD == "Solway Tweed") -> df_tmp
+# variables <- unique(df_tmp$variable)
+# 
+# # Loop through each variable and create a plot
+# for (var in variables) {
+#   # Filter data for the current variable
+#   df_var <- df_tmp %>% filter(variable == var)
+#   
+#   # Generate the plot
+#   pl <- df_var %>% 
+#     ggplot(aes(
+#       x = Date,
+#       y = log(value + 1)
+#     )) +
+#     geom_point() +
+#     geom_smooth(method = "loess") + 
+#     labs(
+#       title = paste("Solway Tweed RBD:", var),
+#       subtitle = "Log (n+1) total FWS values per ml"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0),
+#       axis.title = element_blank(),
+#       strip.text = element_text(face = 2)
+#     )
+#   
+#   # Save the plot with the variable name in the filename
+#   ggsave(
+#     plot = pl, 
+#     file = paste0("figs/initPlot_ts_counts_", var, "_slwy.pdf"),
+#     width = 14, 
+#     height = 8
+#   )
+# }
+# rm(pl,variables,df_tmp,df_var)
+# 
+# ## SWS data ####
+# tic("Plot time series for SWS")
+# ### Anglian ####
+# df_trim_l %>% 
+#   filter(.,str_ends(variable, "_SWS")) %>% 
+#   filter(., variable != "wrSi_SWS") %>% 
+#   filter(., RBD == "Anglian") -> df_tmp
+# variables <- unique(df_tmp$variable)
+# 
+# # Loop through each variable and create a plot
+# for (var in variables) {
+#   # Filter data for the current variable
+#   df_var <- df_tmp %>% filter(variable == var)
+#   
+#   # Generate the plot
+#   pl <- df_var %>% 
+#     ggplot(aes(
+#       x = Date,
+#       y = log(value + 1)
+#     )) +
+#     geom_point() +
+#     geom_smooth(method = "loess") + 
+#     labs(
+#       title = paste("Anglian RBD:", var),
+#       subtitle = "Log (n+1) total FWS values per ml"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0),
+#       axis.title = element_blank(),
+#       strip.text = element_text(face = 2)
+#     )
+#   
+#   # Save the plot with the variable name in the filename
+#   ggsave(
+#     plot = pl, 
+#     file = paste0("figs/initPlot_ts_counts_", var, "_ang.pdf"),
+#     width = 14, 
+#     height = 8
+#   )
+# }
+# rm(pl,variables,df_tmp,df_var)
+# 
+# ### Humber ####
+# df_trim_l %>% 
+#   filter(.,str_ends(variable, "_SWS")) %>% 
+#   filter(., variable != "wrSi_SWS") %>% 
+#   filter(., RBD == "Humber") -> df_tmp
+# variables <- unique(df_tmp$variable)
+# 
+# # Loop through each variable and create a plot
+# for (var in variables) {
+#   # Filter data for the current variable
+#   df_var <- df_tmp %>% filter(variable == var)
+#   
+#   # Generate the plot
+#   pl <- df_var %>% 
+#     ggplot(aes(
+#       x = Date,
+#       y = log(value + 1)
+#     )) +
+#     geom_point() +
+#     geom_smooth(method = "loess") + 
+#     labs(
+#       title = paste("Humber RBD:", var),
+#       subtitle = "Log (n+1) total FWS values per ml"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0),
+#       axis.title = element_blank(),
+#       strip.text = element_text(face = 2)
+#     )
+#   
+#   # Save the plot with the variable name in the filename
+#   ggsave(
+#     plot = pl, 
+#     file = paste0("figs/initPlot_ts_counts_", var, "_hum.pdf"),
+#     width = 14, 
+#     height = 8
+#   )
+# }
+# rm(pl,variables,df_tmp,df_var)
+# 
+# ### Northumbria ####
+# df_trim_l %>% 
+#   filter(.,str_ends(variable, "_SWS")) %>% 
+#   filter(., variable != "wrSi_SWS") %>% 
+#   filter(., RBD == "Northumbria") -> df_tmp
+# variables <- unique(df_tmp$variable)
+# 
+# # Loop through each variable and create a plot
+# for (var in variables) {
+#   # Filter data for the current variable
+#   df_var <- df_tmp %>% filter(variable == var)
+#   
+#   # Generate the plot
+#   pl <- df_var %>% 
+#     ggplot(aes(
+#       x = Date,
+#       y = log(value + 1)
+#     )) +
+#     geom_point() +
+#     geom_smooth(method = "loess") + 
+#     labs(
+#       title = paste("Northumbria RBD:", var),
+#       subtitle = "Log (n+1) total FWS values per ml"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0),
+#       axis.title = element_blank(),
+#       strip.text = element_text(face = 2)
+#     )
+#   
+#   # Save the plot with the variable name in the filename
+#   ggsave(
+#     plot = pl, 
+#     file = paste0("figs/initPlot_ts_counts_", var, "_nthm.pdf"),
+#     width = 14, 
+#     height = 8
+#   )
+# }
+# rm(pl,variables,df_tmp,df_var)
+# 
+# ### Solway Tweed ####
+# df_trim_l %>% 
+#   filter(.,str_ends(variable, "_SWS")) %>% 
+#   filter(., variable != "wrSi_SWS") %>% 
+#   filter(., RBD == "Solway Tweed") -> df_tmp
+# variables <- unique(df_tmp$variable)
+# 
+# # Loop through each variable and create a plot
+# for (var in variables) {
+#   # Filter data for the current variable
+#   df_var <- df_tmp %>% filter(variable == var)
+#   
+#   # Generate the plot
+#   pl <- df_var %>% 
+#     ggplot(aes(
+#       x = Date,
+#       y = log(value + 1)
+#     )) +
+#     geom_point() +
+#     geom_smooth(method = "loess") + 
+#     labs(
+#       title = paste("Solway Tweed RBD:", var),
+#       subtitle = "Log (n+1) total FWS values per ml"
+#     ) +
+#     theme(
+#       axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0),
+#       axis.title = element_blank(),
+#       strip.text = element_text(face = 2)
+#     )
+#   
+#   # Save the plot with the variable name in the filename
+#   ggsave(
+#     plot = pl, 
+#     file = paste0("figs/initPlot_ts_counts_", var, "_slwy.pdf"),
+#     width = 14, 
+#     height = 8
+#   )
+# }
+# rm(pl,variables,df_tmp,df_var)
+# toc(log=TRUE)
+# 
+
+# Plots by lifeforms ####
+tic("Plots by lifeforms")
+unique_vars <- unique(df_trim_l$variable)
+unique_vars <- unique_vars[!grepl("^wrSi", unique_vars)]
+
+# Loop through each variable
+for (var in unique_vars) {
+  # Filter the dataset for the current variable
+  filtered_data <- df_trim_l %>% filter(variable == var)
+  
+  # Create the plot
+  pl <- ggplot(filtered_data, aes(x = Date, y = log(value + 1))) +
+    geom_point() +
+    geom_smooth(method = "loess") +
+    ylim(0, NA) +
+    labs(
+      title = var,
+      subtitle = "Log (n+1) total abundance values per ml"
+    ) +
+    facet_wrap(. ~ RBD) +
+    theme(
+      axis.text.x = element_text(angle = 270, hjust = 0, vjust = 0),
+      axis.title = element_blank(),
+      strip.text = element_text(face = 2)
+    )
+  
+  # Save the plot
+  ggsave(
+    filename = file.path(paste0("figs/",var,"_by_lifeform", ".pdf")),
+    plot = pl,
+    device = "pdf",
+    height = 8,
+    width = 14
+  )
+}
+  
+rm(unique_vars, filtered_data, pl)
+toc(log = TRUE)
 
 unlist(tictoc::tic.log())
