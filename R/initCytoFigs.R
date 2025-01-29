@@ -993,3 +993,15 @@ rm(unique_vars, filtered_data, pl)
 toc(log = TRUE)
 
 unlist(tictoc::tic.log())
+
+##tidy up
+rm(list = ls(pattern = "^(df|cb)"))
+rm(cnt, facet,fws,GISfol,i,mt,n_pages,nit,perms,ppi,sws,var)
+
+detach("package:ggforce", unload=TRUE)
+detach("package:ggplot2", unload=TRUE)
+detach("package:nngeo", unload=TRUE)
+detach("package:maps", unload=TRUE)
+detach("package:sf", unload=TRUE)
+detach("package:tictoc", unload=TRUE)
+detach("package:tidyverse", unload=TRUE)
